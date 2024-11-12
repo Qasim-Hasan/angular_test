@@ -30,7 +30,7 @@ export class SignuppageComponent {
         horizontalPosition: 'center',
         verticalPosition: 'top'
       });
-      return; // Prevent form submission
+      return;
     }
 
     this.signupService.createAdmin(this.admin).subscribe(
@@ -44,14 +44,23 @@ export class SignuppageComponent {
         this.router.navigate(['/login']);
       },
       error => {
-        console.error('Error creating admin', error);
-        this.snackBar.open('Error creating admin. Please try again.', 'Close', {
-          duration: 3000,
-          horizontalPosition: 'center',
-          verticalPosition: 'top'
-        });
+        if (error.status === 400 && error.error.detail === "Username already exists") {
+          this.snackBar.open('Username already exists. Choose a different one.', 'Close', {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top'
+          });
+        } else {
+          console.error('Error creating admin', error);
+          this.snackBar.open('Error creating admin. Please try again.', 'Close', {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top'
+          });
+        }
       }
     );
   }
+
 }
 
